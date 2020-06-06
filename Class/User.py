@@ -29,3 +29,11 @@ class User():
     def password(self, password):
         self.__Password = password
 
+    @property
+    def hak_akses(self):
+        return self.__HakAkses
+
+    @hak_akses.setter
+    def hak_akses(self, hak_akses):
+        self.__HakAkses = hak_akses
+
