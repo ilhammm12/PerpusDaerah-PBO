@@ -36,14 +36,14 @@ class OrmBuku(Base):
     def editBuku():
         session = sessionFactory()
         session.query(OrmBuku).filter_by(IdBuku=1).update({
-            OrmBuku.Stok:2}, synchronize_session=False)
+            OrmBuku.NomorRak:"Komedi"}, synchronize_session=False)
         session.commit()
         session.close()
 
     @staticmethod
     def hapusBuku():
         session = sessionFactory()
-        session.query(OrmBuku).filter_by(IdBuku=3).delete()
+        session.query(OrmBuku).filter_by(IdBuku=1).delete()
         session.commit()
         session.close()
 
@@ -53,4 +53,8 @@ class OrmBuku(Base):
         return session.query(OrmBuku).all()
         session.close()
 
-
+    def hapusBuku(idSelect):
+        session = sessionFactory()
+        session.query(OrmBuku).filter_by(IdBuku=idSelect).delete()
+        session.commit()
+        session.close()
