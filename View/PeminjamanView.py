@@ -35,7 +35,7 @@ class PeminjamanView(QWidget):
 
         self.btntambah.clicked.connect(self.enableform)
         # self.btnedit.clicked.connect(lambda: self.editanggota())
-        # self.btnhapus.clicked.connect(self.hapusAnggotaId)
+        self.btnhapus.clicked.connect(self.hapusid)
         self.btnkembali.clicked.connect(self.kembalikanbuku)
         self.formpinjam.addRow(self.layouttabel)
         self.formpinjam.addRow(self.layoutCrud)
@@ -88,7 +88,7 @@ class PeminjamanView(QWidget):
 
     def buattabel(self):
         self.tablepinjam = QTableWidget(self)
-        self.tablepinjam.cellClicked.connect(self.isiForm)
+
         self.tablepinjam.setColumnCount(7)
         self.tablepinjam.setHorizontalHeaderLabels(
             ["Id Peminjaman", "Id Anggota", "Id Petugas", "Id Buku", "Tanggal Peminjaman", "Tanggal Kembalikan", "Status"])
@@ -96,15 +96,6 @@ class PeminjamanView(QWidget):
         self.tablepinjam.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
 
-    def isiForm(self, row): 
-        self.idanggota.setText(self.tablepinjam.item(row, 1).text())
-        self.idpetugas.setText(self.tablepinjam.item(row, 2).text())
-        self.idbuku.setText(self.tablepinjam.item(row, 3).text())
-        dataTgl = self.tablepinjam.item(row, 4).text().split('/')
-        dd = int(dataTgl[0])
-        mm = int(dataTgl[1])
-        yy = int(dataTgl[2])
-        self.tglpinjam.setDate(QDate(dd, mm, yy))
     def isiTable(self):
         query = OrmPeminjaman.tampilpinjam()
 
@@ -177,9 +168,19 @@ class PeminjamanView(QWidget):
         self.idpetugas.clear()
         self.idbuku.clear()
 
+    def cekid(self, row):
+        self.SelectedId = int(self.tablepinjam.item(row, 0).text())
+        print(self.SelectedId)
 
-
-
+    def hapusid(self, row):
+        SelectedId = int(self.tablepinjam.item(row, 0).text())
+        OrmPeminjaman.hapuspeminjaman(SelectedId)
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Data Telah Dihapus")
+        msg.setWindowTitle("Berhasil")
+        msg.exec_()
+        self.isiTable()
 
 def tes():
     app = QApplication(sys.argv)
