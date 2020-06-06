@@ -84,6 +84,7 @@ class BukuView(QWidget):
 
     def buattabel(self):
         self.tablebuku = QTableWidget()
+        self.tablebuku.cellClicked.connect(self.isiForm)
         self.tablebuku.setColumnCount(7)
         self.tablebuku.setHorizontalHeaderLabels(
             ["IdBuku","Judul Buku","Pengarang", "Penerbit","Tahun Terbit", "Stok Buku", "No Rak"])
@@ -103,6 +104,23 @@ class BukuView(QWidget):
             self.tablebuku.setItem(row, 5, QTableWidgetItem(str(query[row].Stok)))
             self.tablebuku.setItem(row, 6, QTableWidgetItem(query[row].NomorRak))
 
+    def isiForm(self, row):
+        self.judulb.setText(self.tablebuku.item(row, 1).text())
+        self.pengarang.setText(self.tablebuku.item(row, 2).text())
+        self.penerbit.setText(self.tablebuku.item(row, 3).text())
+        # self.tahunterbit.setDate(QDate(self.tablebuku.item(row, 4).text()))
+        self.stokbuku.setText(self.tablebuku.item(row, 5).text())
+        # self.nohp.setText(self.tableanggota.item(row, 6).text())
+        #
+        if str(self.tablebuku.item(row, 6).text()) == 'Drama':
+            rak = 0
+        elif str(self.tablebuku.item(row, 6).text()) == 'Komedi':
+            rak = 1
+        elif str(self.tablebuku.item(row, 6).text()) == 'Sejarah':
+            rak = 1
+        elif str(self.tablebuku.item(row, 6).text()) == 'Biografi':
+            rak = 1
+        self.norak.setCurrentIndex(rak)
     def simpan_btn(self):
         try:
             Buku(self.judulb.text(),
