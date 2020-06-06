@@ -81,7 +81,7 @@ class PetugasView(QWidget):
 
     def buattabel(self):
         self.tablepetugas = QTableWidget()
-        self.tablepetugas.cellClicked.connect(self.cek)
+        self.tablepetugas.cellClicked.connect(self.isiForm)
         self.tablepetugas.setColumnCount(7)
         self.tablepetugas.setHorizontalHeaderLabels(
             ["IdPetugas", "Nama", "TempatLahir", "TanggalLahir", "Alamat", "NoHandphone", "JenisKelamin"])
@@ -89,14 +89,16 @@ class PetugasView(QWidget):
         self.tablepetugas.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
 
-    def cek(self, row):
-        print(self.tablepetugas.item(row, 0).text())
-        print(self.tablepetugas.item(row, 1).text())
-        print(self.tablepetugas.item(row, 2).text())
-        print(self.tablepetugas.item(row, 3).text())
-        print(self.tablepetugas.item(row, 4).text())
-        print(self.tablepetugas.item(row, 5).text())
-        print(self.tablepetugas.item(row, 6).text())
+    def isiForm(self, row):
+        self.nama.setText(self.tablepetugas.item(row, 1).text())
+        self.tempatlahir.setText(self.tablepetugas.item(row, 2).text())
+        self.alamat.setText(self.tablepetugas.item(row, 4).text())
+        self.nohp.setText(str(self.tablepetugas.item(row, 5).text()))
+        if str(self.tablepetugas.item(row, 6).text()) == 'laki-laki':
+            jk = 0
+        elif str(self.tablepetugas.item(row, 6).text()) == 'perempuan':
+            jk = 1
+        self.jenkel.setCurrentIndex(jk)
 
     def isiTable(self):
         query = OrmPetugas.tampilpetugas()
