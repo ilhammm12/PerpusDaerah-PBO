@@ -1,70 +1,57 @@
-from sqlalchemy import Column, String, Integer, Enum
-
-
+from sqlalchemy import create_engine, Column, Integer, String, Enum,Date
 from Model.base import Base, sessionFactory
-from Class.HakAkses import HakAkses
+from Class.JenisKelamin import JenisKelamin
 
-class OrmUser(Base):
-    __tablename__ = 'tbl_user'
 
-    id_username = Column(Integer, primary_key=True)
-    username = Column(String, unique=True)
-    password = Column(String)
-    hak_akses = Column(Enum(HakAkses))
+class OrmPetugas(Base):
 
-    def __init__(self, username, password, HakAkses):
-        self.username = username
-        self.password = password
-        self.hak_akses = HakAkses
+    __tablename__ = 'tb_petugas'
+
+    idpetugas = Column(Integer, primary_key=True)
+    Nama = Column(String)
+    TempatLahir = Column(String)
+    TanggalLahir = Column(String)
+    Alamat = Column(String)
+    NoHandphone = Column(String)
+    JenisKelamin = Column(String)
+
+    def __init__(self, nama, tempatlahir,tanggallahir, alamat, nohandphone, jeniskelamin):
+        self.Nama = nama
+        self.TempatLahir = tempatlahir
+        self.TanggalLahir = tanggallahir
+        self.Alamat = alamat
+        self.NoHandphone = nohandphone
+        self.JenisKelamin = jeniskelamin
         session = sessionFactory()
         session.add(self)
         session.commit()
         session.close()
 
+    # @staticmethod
+    # def tambahPetugas():
+    #     session = sessionFactory()
+    #     petugasORM = OrmPetugas("Wahyu","Paser","Giri",821,"lakilaki")
+    #     session.add(petugasORM)
+    #     session.commit()
+    #     session.close()
+
     @staticmethod
-    def insertUser():
+    def editPetugas():
         session = sessionFactory()
-        userOrm = OrmUser("Ilhamm","ilham123","Admin")
-        session.add(userOrm)
+        session.query(OrmPetugas).filter_by(idpetugas=1).update({
+        OrmPetugas.Nama: "Wahyu Achmad Shafardan"
+        }, synchronize_session=False)
+        session.commit()
+        session.close()
+
+    def hapusPetugas(idSelect):
+        session = sessionFactory()
+        session.query(OrmPetugas).filter_by(idpetugas=idSelect).delete()
         session.commit()
         session.close()
 
     @staticmethod
-    def hapusUser(username):
-        try:
-            session = sessionFactory()
-            session.query(OrmUser).filter_by(username=username).delete()
-            session.commit()
-            session.close()
-        except Exception as e:
-            print("===>", e)
-        else:
-            print("Data telah Berhasil Dihapus")
-
-    @staticmethod
-    def tampiluser():
+    def tampilpetugas():
         session = sessionFactory()
-        return session.query(OrmUser).all()
+        return session.query(OrmPetugas).all()
         session.close()
-
-    @staticmethod
-    def cekuser(username, password) -> bool:
-        try:
-            session = sessionFactory()
-            if ((session.query(OrmUser).filter_by(username=username, password=password).count()) == 1):
-                return True
-            else:
-                return False
-            session.close()
-        except Exception as e:
-            print("===>", e)
-
-    @staticmethod
-    def findHakAkses(username):
-        try:
-            session = sessionFactory()
-            for user in session.query(OrmUser).filter_by(username=username):
-                return user.hak_akses
-            session.close()
-        except Exception as e:
-            print("===>", e)
