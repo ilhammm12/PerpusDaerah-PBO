@@ -8,7 +8,7 @@ from Model.Orm.OrmPetugas import OrmPetugas
 class PetugasView(QWidget):
 
     def __init__(self):
-        super().__init__()
+        super(PetugasView,self).__init__()
         self.setWindowTitle("Data Petugas")
         self.resize(750, 350)
         self.UI()
@@ -32,7 +32,7 @@ class PetugasView(QWidget):
 
         self.btntambah.clicked.connect(self.enableform)
         # self.btnedit.clicked.connect(lambda: self.editanggota())
-        # self.btnhapus.clicked.connect(self.hapusAnggotaId)
+        self.btnhapus.clicked.connect(self.hapusAnggotaId)
         self.formpetugas.addRow(self.layouttabel)
         self.formpetugas.addRow(self.layoutCrud)
 
@@ -81,7 +81,7 @@ class PetugasView(QWidget):
 
     def buattabel(self):
         self.tablepetugas = QTableWidget()
-        self.tablepetugas.cellClicked.connect(self.isiForm)
+        self.tablepetugas.cellClicked.connect(self.cek)
         self.tablepetugas.setColumnCount(7)
         self.tablepetugas.setHorizontalHeaderLabels(
             ["IdPetugas", "Nama", "TempatLahir", "TanggalLahir", "Alamat", "NoHandphone", "JenisKelamin"])
@@ -89,16 +89,14 @@ class PetugasView(QWidget):
         self.tablepetugas.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
 
-    def isiForm(self, row):
-        self.nama.setText(self.tablepetugas.item(row, 1).text())
-        self.tempatlahir.setText(self.tablepetugas.item(row, 2).text())
-        self.alamat.setText(self.tablepetugas.item(row, 4).text())
-        self.nohp.setText(str(self.tablepetugas.item(row, 5).text()))
-        if str(self.tablepetugas.item(row, 6).text()) == 'laki-laki':
-            jk = 0
-        elif str(self.tablepetugas.item(row, 6).text()) == 'perempuan':
-            jk = 1
-        self.jenkel.setCurrentIndex(jk)
+    def cek(self, row):
+        print(self.tablepetugas.item(row, 0).text())
+        print(self.tablepetugas.item(row, 1).text())
+        print(self.tablepetugas.item(row, 2).text())
+        print(self.tablepetugas.item(row, 3).text())
+        print(self.tablepetugas.item(row, 4).text())
+        print(self.tablepetugas.item(row, 5).text())
+        print(self.tablepetugas.item(row, 6).text())
 
     def isiTable(self):
         query = OrmPetugas.tampilpetugas()
@@ -163,3 +161,18 @@ class PetugasView(QWidget):
         self.tglLahir.clear()
         self.alamat.clear()
         self.nohp.clear()
+
+    def cekid(self, row):
+        self.SelectedId = int(self.tablepetugas.item(row, 0).text())
+        print(self.SelectedId)
+
+    def hapusAnggotaId(self, row):
+        SelectedId = int(self.tablepetugas.item(row, 0).text())
+        OrmPetugas.hapusPetugas(SelectedId)
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Data Telah Dihapus")
+        msg.setWindowTitle("Berhasil")
+        msg.exec_()
+        self.isiTable()
+
