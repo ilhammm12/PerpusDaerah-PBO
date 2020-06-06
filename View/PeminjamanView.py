@@ -10,7 +10,7 @@ class PeminjamanView(QWidget):
 
     def __init__(self):
         super(PeminjamanView,self).__init__()
-        self.setWindowTitle("Data Peminjaman")
+        self.setWindowTitle("Data Peminjaman Buku")
         self.resize(750, 350)
         self.UI()
         self.disableform()
@@ -36,6 +36,7 @@ class PeminjamanView(QWidget):
         self.btntambah.clicked.connect(self.enableform)
         # self.btnedit.clicked.connect(lambda: self.editanggota())
         # self.btnhapus.clicked.connect(self.hapusAnggotaId)
+        self.btnkembali.clicked.connect(self.kembalikanbuku)
         self.formpinjam.addRow(self.layouttabel)
         self.formpinjam.addRow(self.layoutCrud)
 
@@ -136,6 +137,11 @@ class PeminjamanView(QWidget):
             msg.setWindowTitle("Warning")
             msg.exec_()
 
+
+    def kembalikanbuku(self):
+        from View.PengembalianView import PengembalianView
+        self.kembalikan = PengembalianView()
+        self.kembalikan.show()
 
 
     def disableform(self):
