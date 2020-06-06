@@ -88,7 +88,7 @@ class PeminjamanView(QWidget):
 
     def buattabel(self):
         self.tablepinjam = QTableWidget(self)
-
+        self.tablepinjam.cellClicked.connect(self.isiForm)
         self.tablepinjam.setColumnCount(7)
         self.tablepinjam.setHorizontalHeaderLabels(
             ["Id Peminjaman", "Id Anggota", "Id Petugas", "Id Buku", "Tanggal Peminjaman", "Tanggal Kembalikan", "Status"])
@@ -96,6 +96,15 @@ class PeminjamanView(QWidget):
         self.tablepinjam.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
 
+    def isiForm(self, row): 
+        self.idanggota.setText(self.tablepinjam.item(row, 1).text())
+        self.idpetugas.setText(self.tablepinjam.item(row, 2).text())
+        self.idbuku.setText(self.tablepinjam.item(row, 3).text())
+        dataTgl = self.tablepinjam.item(row, 4).text().split('/')
+        dd = int(dataTgl[0])
+        mm = int(dataTgl[1])
+        yy = int(dataTgl[2])
+        self.tglpinjam.setDate(QDate(dd, mm, yy))
     def isiTable(self):
         query = OrmPeminjaman.tampilpinjam()
 
