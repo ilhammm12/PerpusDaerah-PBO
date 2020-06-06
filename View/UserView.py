@@ -136,7 +136,6 @@ class UserView(QWidget):
 
 
 
-
 def tes():
     app = QApplication(sys.argv)
     win = UserView()
