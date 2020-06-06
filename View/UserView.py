@@ -1,22 +1,25 @@
 import sys
 
 from PyQt5.QtWidgets import *
+from Model.Orm.OrmAnggota import OrmAnggota
 from View.Component.QPushButtonComponent import QPushButtonComponent
-from Class.Petugas import Petugas
-from Model.Orm.OrmPetugas import OrmPetugas
+from Class.User import User
+from Model.Orm.OrmUser import OrmUser
 
-class PetugasView(QWidget):
+
+class UserView(QWidget):
 
     def __init__(self):
-        super(PetugasView,self).__init__()
-        self.setWindowTitle("Data Petugas")
+        super(UserView,self).__init__()
+        self.setWindowTitle("Data User")
         self.resize(750, 350)
         self.UI()
         self.disableform()
 
+
     def UI(self):
         self.buatform()
-        self.buattabelpetugas()
+        self.buattabeluser()
         self.layoutUtama = QVBoxLayout()
         self.layouttabel = QHBoxLayout()
         self.layoutCrud = QHBoxLayout()
@@ -28,96 +31,71 @@ class PetugasView(QWidget):
         self.layoutCrud.addWidget(self.btntambah)
         self.layoutCrud.addWidget(self.btnedit)
         self.layoutCrud.addWidget(self.btnhapus)
-        self.layouttabel.addWidget(self.tablepetugas)
+        self.layouttabel.addWidget(self.tableuser)
 
         self.btntambah.clicked.connect(self.enableform)
         # self.btnedit.clicked.connect(lambda: self.editanggota())
-        self.btnhapus.clicked.connect(self.hapusAnggotaId)
-        self.formpetugas.addRow(self.layouttabel)
-        self.formpetugas.addRow(self.layoutCrud)
+        self.btnhapus.clicked.connect(self.hapususer)
+        self.formuser.addRow(self.layouttabel)
+        self.formuser.addRow(self.layoutCrud)
 
+        # self.layoutUtama.addLayout(self.layouttabel)
         self.layoutUtama.addLayout(self.layoutCrud)
         self.setLayout(self.layoutUtama)
 
+
     def buatform(self):
         # formlayout
-        self.formpetugas = QFormLayout(self)
-        # data inputan
+        self.formuser = QFormLayout(self)
 
-        self.nama = QLineEdit(self)
-        self.nama.setPlaceholderText("Nama Petugas")
-        self.formpetugas.addRow("Nama Petugas", self.nama)
+        # data inputab
+        self.username = QLineEdit(self)
+        self.username.setPlaceholderText("Username")
+        self.formuser.addRow("Usename        ", self.username)
 
-        self.tempatlahir = QLineEdit(self)
-        self.tempatlahir.setPlaceholderText("Tempat Lahir")
-        self.formpetugas.addRow("Tempat Lahir", self.tempatlahir)
+        self.passwrd = QLineEdit(self)
+        self.passwrd.setPlaceholderText("Password")
+        self.formuser.addRow("Password       ", self.passwrd)
 
-        self.tglLahir = QDateEdit(self)
-        self.tglLahir.setDisplayFormat('dd/MM/yyyy')
-        self.tglLahir.setCalendarPopup(True)
-        self.formpetugas.addRow("Tanggal Lahir", self.tglLahir)
-
-        self.alamat = QTextEdit(self)
-        self.alamat.setPlaceholderText("Alamat")
-        self.alamat.setFixedHeight(50)
-        self.formpetugas.addRow("Alamat", self.alamat)
-
-        self.nohp = QLineEdit(self)
-        self.nohp.setInputMask("+62 9999 9999 999")
-        self.formpetugas.addRow("No Handphone", self.nohp)
-
-        self.jenkel = QComboBox()
-        self.jenkel.addItem("laki-laki")
-        self.jenkel.addItem("perempuan")
-        self.formpetugas.addRow("Jenis Kelamin ", self.jenkel)
+        self.hakakses = QComboBox()
+        self.hakakses.addItem("Admin")
+        self.hakakses.addItem("Petugas")
+        self.formuser.addRow("Hak Akses      ", self.hakakses)
         # button
         self.btn_simpan = QPushButtonComponent("SIMPAN")
         self.btn_simpan.setFixedHeight(45)
         self.btn_simpan.clicked.connect(self.simpan_btn)
-        self.formpetugas.addRow(self.btn_simpan)
+        self.formuser.addRow(self.btn_simpan)
 
-    def buattabelpetugas(self):
+
+    def buattabeluser(self):
         self.buattabel()
 
     def buattabel(self):
-        self.tablepetugas = QTableWidget()
-        self.tablepetugas.cellClicked.connect(self.cek)
-        self.tablepetugas.setColumnCount(7)
-        self.tablepetugas.setHorizontalHeaderLabels(
-            ["IdPetugas", "Nama", "TempatLahir", "TanggalLahir", "Alamat", "NoHandphone", "JenisKelamin"])
-        self.tablepetugas.setFixedSize(900, 350)
-        self.tablepetugas.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tableuser = QTableWidget(self)
+        self.tableuser.setColumnCount(4)
+        self.tableuser.setHorizontalHeaderLabels(
+            ["IdUser", "Username", "Password", "Hak Akses"])
+        self.tableuser.setFixedSize(900, 350)
+        self.tableuser.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
 
-    def cek(self, row):
-        print(self.tablepetugas.item(row, 0).text())
-        print(self.tablepetugas.item(row, 1).text())
-        print(self.tablepetugas.item(row, 2).text())
-        print(self.tablepetugas.item(row, 3).text())
-        print(self.tablepetugas.item(row, 4).text())
-        print(self.tablepetugas.item(row, 5).text())
-        print(self.tablepetugas.item(row, 6).text())
-
     def isiTable(self):
-        query = OrmPetugas.tampilpetugas()
-        self.tablepetugas.setRowCount(len(query))
+        query = OrmUser.tampiluser()
+
+        self.tableuser.setRowCount(len(query))
         for row in range(len(query)):
-            self.tablepetugas.setItem(row, 0, QTableWidgetItem(str(query[row].idpetugas)))
-            self.tablepetugas.setItem(row, 1, QTableWidgetItem(str(query[row].Nama)))
-            self.tablepetugas.setItem(row, 2, QTableWidgetItem(query[row].TempatLahir))
-            self.tablepetugas.setItem(row, 3, QTableWidgetItem(query[row].TanggalLahir))
-            self.tablepetugas.setItem(row, 4, QTableWidgetItem(str(query[row].Alamat)))
-            self.tablepetugas.setItem(row, 5, QTableWidgetItem(query[row].NoHandphone))
-            self.tablepetugas.setItem(row, 6, QTableWidgetItem(str(query[row].JenisKelamin)))
+            self.tableuser.setItem(row, 0, QTableWidgetItem(str(query[row].id_username)))
+            self.tableuser.setItem(row, 1, QTableWidgetItem(str(query[row].username)))
+            self.tableuser.setItem(row, 2, QTableWidgetItem(str(query[row].password)))
+            self.tableuser.setItem(row, 3, QTableWidgetItem(str(query[row].hak_akses)))
 
     def simpan_btn(self):
         try:
-            Petugas(self.nama.text(),
-                    self.tempatlahir.text(),
-                    self.tglLahir.text(),
-                    self.alamat.toPlainText(),
-                    self.nohp.text(),
-                    self.jenkel.currentText())
+
+            User(self.username.text(),
+                    self.passwrd.text(),
+                    self.hakakses.currentText())
 
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Information)
@@ -136,39 +114,33 @@ class PetugasView(QWidget):
             msg.setWindowTitle("Warning")
             msg.exec_()
 
+
+
     def disableform(self):
-        self.nama.setReadOnly(True)
-        self.tempatlahir.setReadOnly(True)
-        self.tglLahir.setReadOnly(True)
-        self.alamat.setReadOnly(True)
-        self.nohp.setReadOnly(True)
-        self.jenkel.setDisabled(True)
+
+        self.username.setReadOnly(True)
+        self.passwrd.setReadOnly(True)
+        self.hakakses.setDisabled(True)
         self.btn_simpan.setDisabled(True)
 
     def enableform(self):
-        self.nama.setReadOnly(False)
-        self.tempatlahir.setReadOnly(False)
-        self.tglLahir.setReadOnly(False)
-        self.alamat.setReadOnly(False)
-        self.nohp.setReadOnly(False)
-        self.jenkel.setDisabled(False)
+        self.username.setReadOnly(False)
+        self.passwrd.setReadOnly(False)
+        self.hakakses.setDisabled(False)
         self.btn_simpan.setDisabled(False)
-        self.nama.setFocus()
+        self.username.setFocus()
 
     def refresh(self):
-        self.nama.clear()
-        self.tempatlahir.clear()
-        self.tglLahir.clear()
-        self.alamat.clear()
-        self.nohp.clear()
+        self.username.clear()
+        self.passwrd.clear()
 
     def cekid(self, row):
-        self.SelectedId = int(self.tablepetugas.item(row, 0).text())
+        self.SelectedId = int(self.tableuser.item(row, 0).text())
         print(self.SelectedId)
 
-    def hapusAnggotaId(self, row):
-        SelectedId = int(self.tablepetugas.item(row, 0).text())
-        OrmPetugas.hapusPetugas(SelectedId)
+    def hapususer(self, row):
+        SelectedId = int(self.tableuser.item(row, 0).text())
+        OrmUser.hapususer(SelectedId)
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setText("Data Telah Dihapus")
