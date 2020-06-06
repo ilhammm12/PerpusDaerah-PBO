@@ -73,6 +73,7 @@ class UserView(QWidget):
 
     def buattabel(self):
         self.tableuser = QTableWidget(self)
+        self.tableuser.cellClicked.connect(self.isiForm)
         self.tableuser.setColumnCount(4)
         self.tableuser.setHorizontalHeaderLabels(
             ["IdUser", "Username", "Password", "Hak Akses"])
@@ -80,6 +81,14 @@ class UserView(QWidget):
         self.tableuser.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
 
+    def isiForm(self, row): 
+        self.username.setText(self.tableuser.item(row, 1).text())
+        self.passwrd.setText(self.tableuser.item(row, 2).text())
+        if str(self.tableuser.item(row, 3).text()) == 'Admin':
+            hk = 0
+        elif str(self.tableuser.item(row, 3).text()) == 'Petugas':
+            hk = 1
+        self.hakakses.setCurrentIndex(hk)
     def isiTable(self):
         query = OrmUser.tampiluser()
 
