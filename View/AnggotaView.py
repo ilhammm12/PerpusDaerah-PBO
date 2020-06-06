@@ -1,5 +1,5 @@
 import sys
-
+from PyQt5.QtCore import Qt, pyqtSlot, QDate
 from PyQt5.QtWidgets import *
 from Model.Orm.OrmAnggota import OrmAnggota
 from View.Component.QPushButtonComponent import QPushButtonComponent
@@ -89,7 +89,7 @@ class AnggotaView(QWidget):
 
     def buattabel(self):
         self.tableanggota = QTableWidget(self)
-        self.tableanggota.cellClicked.connect(self.cekid)
+        self.tableanggota.cellClicked.connect(self.isiForm)
         self.tableanggota.setColumnCount(8)
         self.tableanggota.setHorizontalHeaderLabels(
             ["IdAnggota", "Nik", "Nama", "TempatLahir", "TanggalLahir", "Alamat", "NoHandphone", "JenisKelamin"])
@@ -110,6 +110,24 @@ class AnggotaView(QWidget):
             self.tableanggota.setItem(row, 5, QTableWidgetItem(query[row].TanggalLahir))
             self.tableanggota.setItem(row, 6, QTableWidgetItem(str(query[row].Alamat)))
             self.tableanggota.setItem(row, 7, QTableWidgetItem(str(query[row].JenisKelamin)))
+
+    def isiForm(self, row):
+        self.Nik.setText(str(self.tableanggota.item(row, 1).text()))
+        self.nama.setText(self.tableanggota.item(row, 2).text())
+        self.tempatlahir.setText(self.tableanggota.item(row, 3).text())
+        dataTgl = self.tableanggota.item(row, 4).text().split('/')
+        dd = int(dataTgl[0])
+        mm = int(dataTgl[1])
+        yy = int(dataTgl[2])
+        self.tglLahir.setDate(QDate(yy, mm, dd))
+        self.alamat.setText(self.tableanggota.item(row, 5).text())
+        self.nohp.setText(self.tableanggota.item(row, 6).text())
+
+        if str(self.tableanggota.item(row, 7).text()) == 'laki-laki':
+            jk = 0
+        elif str(self.tableanggota.item(row, 7).text()) == 'perempuan':
+            jk = 1
+        self.jenkel.setCurrentIndex(jk)
 
     def simpan_btn(self):
         try:
