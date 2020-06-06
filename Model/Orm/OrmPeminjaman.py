@@ -5,7 +5,7 @@ from Class.StatusPinjam import StatusPinjam
 
 
 class OrmPeminjaman(Base):
-    __tablename__ = 'tb_peminjaman'
+    __tablename__ = 'peminjaman'
 
     idpeminjaman = Column(Integer, primary_key=True)
     idanggota = Column(String)
@@ -39,14 +39,13 @@ class OrmPeminjaman(Base):
         session.close()
 
     @staticmethod
-    def hapusPinjam():
-        session = sessionFactory()
-        session.query(OrmPeminjaman).filter_by(Status="Selesai").delete()
-        session.commit()
-        session.close()
-
-    @staticmethod
     def tampilpinjam():
         session = sessionFactory()
         return session.query(OrmPeminjaman).all()
+        session.close()
+
+    def hapuspeminjaman(idSelect):
+        session = sessionFactory()
+        session.query(OrmPeminjaman).filter_by(idpeminjaman=idSelect).delete()
+        session.commit()
         session.close()
