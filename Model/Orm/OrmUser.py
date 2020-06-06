@@ -10,7 +10,7 @@ class OrmUser(Base):
     id_username = Column(Integer, primary_key=True)
     username = Column(String, unique=True)
     password = Column(String)
-    hak_akses = Column(String)
+    hak_akses = Column(Enum(HakAkses))
 
     def __init__(self, username, password, HakAkses):
         self.username = username
@@ -46,3 +46,25 @@ class OrmUser(Base):
         session = sessionFactory()
         return session.query(OrmUser).all()
         session.close()
+
+    @staticmethod
+    def cekuser(username, password) -> bool:
+        try:
+            session = sessionFactory()
+            if ((session.query(OrmUser).filter_by(username=username, password=password).count()) == 1):
+                return True
+            else:
+                return False
+            session.close()
+        except Exception as e:
+            print("===>", e)
+
+    @staticmethod
+    def findHakAkses(username):
+        try:
+            session = sessionFactory()
+            for user in session.query(OrmUser).filter_by(username=username):
+                return user.hak_akses
+            session.close()
+        except Exception as e:
+            print("===>", e)
