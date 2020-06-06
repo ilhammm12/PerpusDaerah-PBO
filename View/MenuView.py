@@ -2,13 +2,13 @@ import sys
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import *
-
+from Class.HakAkses import HakAkses
 from View.Component.QFrameComponent import QFrameComponent
 from View.Component.QPushButtonComponent import QPushButtonComponent
 
 
 class MainMenuView(QWidget):
-    def __init__(self):
+    def __init__(self,username,hakakses):
         super().__init__()
 
         self.showMaximized()
@@ -28,7 +28,8 @@ class MainMenuView(QWidget):
         self.btnBuku = QPushButtonComponent("Data Buku")
         self.btnUser = QPushButtonComponent("Data User")
         self.btnLogOut = QPushButtonComponent("Log Out")
-
+        self.hak_akses = QLabel(str(hakakses))
+        self.username = QLabel(str(username))
         framebodybar = QFrameComponent("maroon")
         bodyBarLayout = QHBoxLayout(framebodybar)
 
@@ -39,7 +40,8 @@ class MainMenuView(QWidget):
         headBarLayout.addWidget(self.btnTransaksi, 0, 4)
         headBarLayout.addWidget(self.btnUser, 0, 5)
         headBarLayout.addWidget(self.btnLogOut, 0, 6, QtCore.Qt.AlignBottom)
-
+        bodyBarLayout.addWidget(self.username)
+        bodyBarLayout.addWidget(self.hak_akses)
 
         layoutUtama = QGridLayout()
         layoutUtama.addWidget(frameheadBar,0, 1, 1, 10, QtCore.Qt.AlignTop)
@@ -51,7 +53,7 @@ class MainMenuView(QWidget):
         self.btnUser.clicked.connect(lambda: self.openuser())
         self.btnTransaksi.clicked.connect(lambda: self.openpeminjaman())
         self.btnLogOut.clicked.connect(lambda: self.openlogout())
-        # self.hak_akses()
+        self.cekhak_akses()
         self.setLayout(layoutUtama)
         self.show()
 
@@ -101,12 +103,12 @@ class MainMenuView(QWidget):
         self.loginview.show()
         self.close()
 
-    # def hak_akses(self):
-    #     HakAkses = self.HakAkses.text()
-    #     if (HakAkses == str(HakAkses.PETUGAS)):
-    #         self.btnPetugas.setVisible(False)
-    #         self.btnUser.setVisible(False)
-    #     elif (HakAkses == str(HakAkses.ADMIN)):
-    #         self.btnPetugas.setVisible(True)
-    #         self.btnUser.setVisible(True)
+    def cekhak_akses(self):
+        hak_akses = self.hak_akses.text()
+        if (hak_akses == str(HakAkses.Petugas)):
+            self.btnPetugas.setVisible(False)
+            self.btnUser.setVisible(False)
+        elif (hak_akses == str(HakAkses.Admin)):
+            self.btnPetugas.setVisible(True)
+            self.btnUser.setVisible(True)
 
