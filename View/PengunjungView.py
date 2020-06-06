@@ -70,7 +70,7 @@ class PengunjungView(QDialog):
 
     def buattabel(self):
         self.tablepengunjung = QTableWidget()
-        self.tablepengunjung.cellClicked.connect(self.cek)
+        self.tablepengunjung.cellClicked.connect(self.isiForm)
         self.tablepengunjung.setColumnCount(5)
         self.tablepengunjung.setHorizontalHeaderLabels(
             ["Id Pengunjung","Nama","Alamat","NoHandphone","Tanggal Berkunjung"])
@@ -78,12 +78,15 @@ class PengunjungView(QDialog):
         self.tablepengunjung.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
 
-    def cek(self, row):
-        print(self.tablepengunjung.item(row, 0).text())
-        print(self.tablepengunjung.item(row, 1).text())
-        print(self.tablepengunjung.item(row, 2).text())
-        print(self.tablepengunjung.item(row, 3).text())
-        print(self.tablepengunjung.item(row, 4).text())
+    def isiForm(self, row):
+        self.nama.setText(self.tablepengunjung.item(row, 1).text())
+        self.alamat.setText(self.tablepengunjung.item(row, 2).text())
+        dataTgl = self.tablepengunjung.item(row, 4).text().split('/')
+        dd = int(dataTgl[0])
+        mm = int(dataTgl[1])
+        yy = int(dataTgl[2])
+        self.tglberkunjung.setDate(QDate(yy, mm, dd))
+        self.nohp.setText(str(self.tablepengunjung.item(row, 3).text()))
 
     def isiTable(self):
         query = OrmPengunjung.tampilpengunjung()
