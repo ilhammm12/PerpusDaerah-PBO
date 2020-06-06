@@ -34,7 +34,7 @@ class BukuView(QWidget):
 
         self.btntambah.clicked.connect(self.enableform)
         # self.btnedit.clicked.connect(lambda: self.editanggota())
-        # self.btnhapus.clicked.connect(self.hapusAnggotaId)
+        self.btnhapus.clicked.connect(self.hapusid)
         self.formbuku.addRow(self.layouttabel)
         self.formbuku.addRow(self.layoutCrud)
 
@@ -84,10 +84,9 @@ class BukuView(QWidget):
 
     def buattabel(self):
         self.tablebuku = QTableWidget()
-        self.tablebuku.cellClicked.connect(self.isiForm)
         self.tablebuku.setColumnCount(7)
         self.tablebuku.setHorizontalHeaderLabels(
-            ["IdBuku","Judul Buku","Pengarang", "Penerbit","Tahun Terbit", "Stok Buku", "No Rak"])
+            ["IdBuku","Judul Buku","Pengarang", "Penerbit","Tahun Terbit", "Stok Buku", "Nama Rak"])
         self.tablebuku.setFixedSize(900, 350)
         self.tablebuku.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.isiTable()
@@ -104,23 +103,6 @@ class BukuView(QWidget):
             self.tablebuku.setItem(row, 5, QTableWidgetItem(str(query[row].Stok)))
             self.tablebuku.setItem(row, 6, QTableWidgetItem(query[row].NomorRak))
 
-    def isiForm(self, row):
-        self.judulb.setText(self.tablebuku.item(row, 1).text())
-        self.pengarang.setText(self.tablebuku.item(row, 2).text())
-        self.penerbit.setText(self.tablebuku.item(row, 3).text())
-        # self.tahunterbit.setDate(QDate(self.tablebuku.item(row, 4).text()))
-        self.stokbuku.setText(self.tablebuku.item(row, 5).text())
-        # self.nohp.setText(self.tableanggota.item(row, 6).text())
-        #
-        if str(self.tablebuku.item(row, 6).text()) == 'Drama':
-            rak = 0
-        elif str(self.tablebuku.item(row, 6).text()) == 'Komedi':
-            rak = 1
-        elif str(self.tablebuku.item(row, 6).text()) == 'Sejarah':
-            rak = 1
-        elif str(self.tablebuku.item(row, 6).text()) == 'Biografi':
-            rak = 1
-        self.norak.setCurrentIndex(rak)
     def simpan_btn(self):
         try:
             Buku(self.judulb.text(),
@@ -173,6 +155,19 @@ class BukuView(QWidget):
         self.tahunterbit.clear()
         self.stokbuku.clear()
 
+    def cekid(self, row):
+        self.SelectedId = int(self.tablebuku.item(row, 0).text())
+        print(self.SelectedId)
+
+    def hapusid(self, row):
+        SelectedId = int(self.tablebuku.item(row, 0).text())
+        OrmBuku.hapusBuku(SelectedId)
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Data Telah Dihapus")
+        msg.setWindowTitle("Berhasil")
+        msg.exec_()
+        self.isiTable()
 
 def tes():
     app = QApplication(sys.argv)
