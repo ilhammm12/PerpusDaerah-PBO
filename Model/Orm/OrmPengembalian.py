@@ -1,52 +1,57 @@
 from sqlalchemy import Column, String, Integer, Text, Enum, Date,ForeignKey
 from Model.base import Base, sessionFactory
-from Model.Orm.OrmPengembalian import OrmPengembalian
+
 from Class.StatusPinjam import StatusPinjam
+from Class.Denda import Denda
 
+class OrmPengembalian(Base):
+    __tablename__ = 'tb_pengembalian'
 
-class OrmPeminjaman(Base):
-    __tablename__ = 'peminjaman'
-
-    idpeminjaman = Column(Integer, primary_key=True)
+    idpengembalian = Column(Integer, primary_key=True)
+    idpeminjaman = Column(String)
     idanggota = Column(String)
     idpetugas = Column(String)
     idbuku = Column(String)
     tglPinjam = Column(String)
     tglKembali = Column(String)
+    tglDikembalikan = Column(String)
     Status = Column(String)
+    Denda = Column(String)
 
-    def __init__(self, idanggota, idpetugas, idbuku, tglPinjam, tglKembali, status):
+    def __init__(self,idpeminjaman,idanggota, idpetugas, idbuku,tglPinjam,tglKembali, tglDikembalikan, status,denda):
+        self.idpeminjaman = idpeminjaman
         self.idanggota = idanggota
         self.idpetugas = idpetugas
         self.idbuku = idbuku
         self.tglPinjam = tglPinjam
         self.tglKembali = tglKembali
+        self.tglDikembalikan =tglDikembalikan
         self.Status = status
+        self.Denda = denda
         session = sessionFactory()
         session.add(self)
         session.commit()
         session.close()
 
-
     @staticmethod
-    def tambahPinjam():
+    def hapusKembali():
         session = sessionFactory()
-        pinjamORM = OrmPeminjaman(1, 1, 1, "Selesai")
-        session.add(pinjamORM)
-        kembaliORM = OrmPengembalian(1, 1, 1, "Selesai", "DuaRb")
-        session.add(kembaliORM)
+        session.query(OrmPengembalian).filter_by(Status="Selesai").delete()
         session.commit()
         session.close()
 
     @staticmethod
-    def hapusPinjam():
-        session = sessionFactory()
-        session.query(OrmPeminjaman).filter_by(Status="Selesai").delete()
-        session.commit()
-        session.close()
+    def jumlahkembali():
+        return sessionFactory().query(OrmPengembalian).filter_by(Status="Selesai").count()
 
     @staticmethod
-    def tampilpinjam():
+    def tampilpengembaian():
         session = sessionFactory()
-        return session.query(OrmPeminjaman).all()
+        return session.query(OrmPengembalian).all()
+        session.close()
+
+    def hapuspengembalian(idSelect):
+        session = sessionFactory()
+        session.query(OrmPengembalian).filter_by(idpengembalian=idSelect).delete()
+        session.commit()
         session.close()
