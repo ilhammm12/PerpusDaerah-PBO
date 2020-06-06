@@ -194,12 +194,3 @@ class PengembalianView(QWidget):
         self.idbuku.clear()
 
 
-
-
-
-def tes():
-    app = QApplication(sys.argv)
-    win = PengembalianView()
-    win.show()
-    sys.exit(app.exec_())
-tes()
