@@ -35,7 +35,7 @@ class PengembalianView(QWidget):
 
         self.btntambah.clicked.connect(self.enableform)
         # self.btnedit.clicked.connect(lambda: self.editanggota())
-        # self.btnhapus.clicked.connect(self.hapusAnggotaId)
+        self.btnhapus.clicked.connect(self.hapusid)
         self.formpinjam.addRow(self.layouttabel)
         self.formpinjam.addRow(self.layoutCrud)
 
@@ -193,4 +193,16 @@ class PengembalianView(QWidget):
         self.idpetugas.clear()
         self.idbuku.clear()
 
+    def cekid(self, row):
+        self.SelectedId = int(self.tablepinjam.item(row, 0).text())
+        print(self.SelectedId)
 
+    def hapusid(self, row):
+        SelectedId = int(self.tablepinjam.item(row, 0).text())
+        OrmPengembalian.hapuspengembalian(SelectedId)
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Data Telah Dihapus")
+        msg.setWindowTitle("Berhasil")
+        msg.exec_()
+        self.isiTable()
