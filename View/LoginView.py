@@ -48,24 +48,25 @@ class LoginView(QWidget):
 
     @pyqtSlot()
     def buttonClick(self):
-        username = self.txtusername.text()
+        username = self.txtUsername.text()
         password = self.txtpassword.text()
-        checkLogin = OrmUser.user_login(username, password)
+        checkLogin = OrmUser.cekuser(username, password)
         if (checkLogin == True):
             self.switchMainMenu()
         else:
             msg = QMessageBox()
             msg.resize(250, 250)
             msg.setIcon(QMessageBox.Warning)
-            msg.setText("Username atau Password Anda Salah!")
-            msg.setWindowTitle("ERROR!")
+            msg.setText("Username Atau Password Salah!")
+            msg.setWindowTitle("LOGIN SALAH")
             msg.exec_()
+
 
     @pyqtSlot()
     def switchMainMenu(self):
-        # username = self.txtusername.text()
-        # hakakses = OrmUser.findHakAkses(username)
-        self.mainMenu = MainMenuView()
+        username = self.txtusername.text()
+        hakakses = OrmUser.findHakAkses(username)
+        self.mainMenu = MainMenuView(username.upper(),hakakses)
         self.mainMenu.show()
         self.hide()
 
