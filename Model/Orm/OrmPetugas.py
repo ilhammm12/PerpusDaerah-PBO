@@ -44,10 +44,9 @@ class OrmPetugas(Base):
         session.commit()
         session.close()
 
-    @staticmethod
-    def hapusPetugas():
+    def hapusPetugas(idSelect):
         session = sessionFactory()
-        session.query(OrmPetugas).filter_by(idpetugas=1).delete()
+        session.query(OrmPetugas).filter_by(idpetugas=idSelect).delete()
         session.commit()
         session.close()
 
@@ -56,4 +55,3 @@ class OrmPetugas(Base):
         session = sessionFactory()
         return session.query(OrmPetugas).all()
         session.close()
-
